@@ -1,10 +1,4 @@
 #!/bin/bash
-###
- # @Description: 
- # @version: 
- # @Author: Zhishuai
- # @Date: 2022-09-13 21:08:30
-### 
 #SBATCH -e run-Ebola-three-step.err
 #SBATCH --mem-per-cpu=2G
 #SBATCH -c 20

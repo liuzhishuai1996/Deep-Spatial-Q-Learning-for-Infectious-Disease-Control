@@ -224,7 +224,7 @@ def stochastic_approximation_for_policy_search(T, s, y, beta, eta, alpha, zeta, 
   DIFF_TOL = 0.0001
 
   it = 0
-  a_dummy = np.zeros(env.L)  # ToDo: Figure out what this should be!  (input to feature function)
+  a_dummy = np.zeros(env.L)  
   diff = float('inf')
   alpha, zeta = update_alpha_and_zeta(alpha, zeta, 0, rho, tau)
   while alpha > tol and it < maxiter and diff > DIFF_TOL:

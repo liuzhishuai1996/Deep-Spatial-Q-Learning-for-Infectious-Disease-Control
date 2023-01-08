@@ -27,7 +27,7 @@ class GGCN1(nn.Module):
   Generalized graph convolutional network (not sure yet if it's a generalization strictly speaking).
   """
   def __init__(self, nfeat, J, adjacency_lst, neighbor_subset_limit=2, samples_per_k=None, recursive=False, dropout=0.0, neighbor_order=2):
-    super(GGCN1, self).__init__() #继承父类init
+    super(GGCN1, self).__init__()
     if neighbor_subset_limit > 1 and recursive:
       self.g1 = nn.Linear(2*J, J)
       # self.g2 = nn.Linear(J, J)
@@ -50,7 +50,6 @@ class GGCN1(nn.Module):
     # E = F.sigmoid(E)
     return E
   
-  #h用了两层
   def h(self, b):
     b = self.h1(b)
     b = F.relu(b)
@@ -58,7 +57,6 @@ class GGCN1(nn.Module):
     #b = F.relu(b)
     return b
   
-  #g用了一层
   def g(self, bvec):
     bvec = self.g1(bvec)
     bvec = F.relu(bvec)
@@ -91,9 +89,8 @@ class GGCN1(nn.Module):
         # result = torch.zeros(self.J)
         result = torch.zeros(1)
         for perm in permutations_k:
-          # ToDo: just takes the first element of the permutation, makes no sense
           x_l1 = torch.tensor(X_[perm[0], :])
-          h_val = self.h(x_l1) #还没编完 
+          h_val = self.h(x_l1)
           result += h_val / len(permutations_k)
         return result
 
@@ -127,22 +124,19 @@ class GGCN1(nn.Module):
           permutations_k = [permutations_k[ix] for ix in permutations_k_ixs]
         self.permutations_all[k][l, :] = np.array(permutations_k).T
 
-  #返回J+p维特征
   def embed_recursive_vec(self, X_, locations_subset=None):
     L = X_.shape[0]
     self.sample_indices_for_recursive() 
     def fk(b, k):
       if k == 1:
-        return self.h(b) #对应论文中的f^1
+        return self.h(b) 
       else:
         result = torch.zeros((L, self.J))
         permutations_k = self.permutations_all[k]
         where_k_neighbors_ = self.where_k_neighbors[k]
         for perm_ix in range(self.samples_per_k):
           permutations_k_perm_ix = permutations_k[:, :, perm_ix]
-          # ToDo: indices in where_k_neighbors_ will be wrong for k < neighbor_subset_limit, because X_ shrinks 没太看懂 先不管了 neighbor_subset_limit=2暂时不会出错
-          # X_1 = torch.tensor(X_[permutations_k_perm_ix[where_k_neighbors_, 0]])
-          X_1 = X_[permutations_k_perm_ix[where_k_neighbors_, 0]] # g的第一个位置上的值 但这里的代码我看不懂
+          X_1 = X_[permutations_k_perm_ix[where_k_neighbors_, 0]] 
           X_lst = np.column_stack([X_[permutations_k_perm_ix[where_k_neighbors_, ix]] for ix in range(1, k)])
           X_lst = torch.tensor(X_lst)
           fkm1_val = fk(X_lst, k-1)
@@ -159,13 +153,12 @@ class GGCN1(nn.Module):
     E = self.g(temp)
     if locations_subset is not None:
       E = E[locations_subset]
-    return E #返回特征 特征是J+nfeat维的
+    return E 
 
   def forward_recursive(self, X_, adjacency_lst):
     L = X_.shape[0]
     final_ = torch.tensor([])
     X_ = torch.tensor(X_)
-    # ToDo: vectorize
     for l in range(L):
       neighbors_l = adjacency_lst[l] + [l]
       N_l = np.min((len(neighbors_l), self.neighbor_subset_limit))
@@ -185,7 +178,6 @@ class GGCN1(nn.Module):
             fkm1_val = fk(x_list, k - 1)
             h_val = self.h(x_l1)
             h_val_cat_fkm1_val = torch.cat((h_val, fkm1_val))
-            # # ToDo: using fixed binary relation to see how it affects speed
             # g_val = h_val + fkm1_val
             g_val = self.g(h_val_cat_fkm1_val)
             result += g_val / len(permutations_k)
@@ -211,12 +203,12 @@ def learn_ggcn1(X_list, y_list, adjacency_list, n_epoch=100, nhid=16, batch_size
                    neighbor_subset_limit=neighbor_subset_limit, samples_per_k=samples_per_k, 
                    recursive=recursive, lr=lr, tol=tol, dropout=dropout, neighbor_order=neighbor_order)
 
-  def embedding_wrapper(X_): #学习得到的特征函数
+  def embedding_wrapper(X_): 
     X_ = torch.FloatTensor(X_)
     E = model.embed_recursive_vec(X_).detach().numpy() 
     return E
 
-  def model_wrapper(X_):  #最终学习出来的模型
+  def model_wrapper(X_):  
     X_ = torch.FloatTensor(X_)
     outcome = model.forward_recursive_vec(X_, train=False) 
     yhat = outcome[:,0].detach().numpy()
@@ -228,8 +220,8 @@ def fit_ggcn1(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5
              neighbor_subset_limit=2, samples_per_k=6, recursive=True, lr=0.01, tol=0.001, dropout=0.0,
              locations_subsets=None, neighbor_order=2):
   # Specify model
-  p = X_list[0].shape[1] #特征维数
-  T = len(X_list) #拟合的总期数
+  p = X_list[0].shape[1] 
+  T = len(X_list) 
   X_list = [torch.FloatTensor(X) for X in X_list]
   y_list = [torch.FloatTensor(y) for y in y_list]
 
@@ -250,16 +242,16 @@ def fit_ggcn1(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5
 
     for X, y, ix in zip(X_batch, y_batch, batch_ixs):
       model.train()
-      optimizer.zero_grad() #将梯度归零--清除上一次的梯度
+      optimizer.zero_grad() 
       X = Variable(X)
-      y = Variable(y).unsqueeze(1) #这是什么？
+      y = Variable(y).unsqueeze(1)
 
       if locations_subsets is not None:
         locations_subset = locations_subsets[ix]
         output = model(X, adjacency_list, locations_subset)
         loss_train = criterion(output, y[locations_subset])
       else:
-        output = model(X, adjacency_list)#???????
+        output = model(X, adjacency_list)
         loss_train = criterion(output, y)
     
       regular = 0
@@ -275,11 +267,11 @@ def fit_ggcn1(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5
 
     # Evaluate loss
     for X_, y_ in zip(X_list, y_list):
-      yhat = model(X_, adjacency_list)[:, 0]#???????
+      yhat = model(X_, adjacency_list)[:, 0]
       acc = ((yhat - y_)**2).float().mean().detach().numpy()
       avg_acc_train += acc / T
 
-    # Break if change in accuracy is sufficiently small  这里会非常影响速度和正确率
+    # Break if change in accuracy is sufficiently small 
     # if epoch > 0:
     #   relative_acc_diff = np.abs(prev_avg_acc_train - avg_acc_train) / avg_acc_train
     #   if relative_acc_diff < tol:
@@ -290,7 +282,7 @@ def fit_ggcn1(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5
   final_mse_train = 0.
   for X_, y_ in zip(X_list, y_list):
     output = model(X_, adjacency_list)
-    yhat = output[:, 0] #???????
+    yhat = output[:, 0] 
     acc = ((yhat - y_)**2).float().mean().detach().numpy()
     final_mse_train += acc / T
   print('final_mse_train: {:.4f}'.format(final_mse_train))
@@ -325,7 +317,7 @@ def oracle_tune_ggcn1(X_list, y_list, adjacency_list, env, eval_actions, true_pr
   worst_score = -float('inf')
   results = {'lr': [], 'dropout': [], 'nhid': [], 'neighbor_subset': [], 'score': []}
   for _ in range(num_settings_to_try):
-    # Fit model with settings 随机选一套组合出来
+    # Fit model with settings 
     lr = np.random.choice(LR_RANGE)
     dropout = np.random.choice(DROPOUT_RANGE)
     nhid = int(np.random.choice(NHID_RANGE))
@@ -341,7 +333,7 @@ def oracle_tune_ggcn1(X_list, y_list, adjacency_list, env, eval_actions, true_pr
     def qfn(a):
       # X_raw_ = env.data_block_at_action(-1, a, raw=True)
       if X_eval is None:
-        X_ = env.data_block_at_action(-1, a) #最后一期的
+        X_ = env.data_block_at_action(-1, a) 
       else:
         X_ = copy.copy(X_eval)
         if hasattr(env, 'NEIGHBOR_DISTANCE_MATRIX'):

@@ -15,7 +15,6 @@ except ImportError:
 from itertools import combinations
 from .nonlinear.nonlinear import argmaxer_nonlinear
 
-#随机生成treatment
 def argmaxer_random(q_fn, evaluation_budget, treatment_budget, env, ixs=None):
   # Placeholder argmax function for debugging.
   if ixs is not None:
@@ -26,10 +25,8 @@ def argmaxer_random(q_fn, evaluation_budget, treatment_budget, env, ixs=None):
   dummy = np.append(np.ones(treatment_budget), np.zeros(L - treatment_budget))
   return np.random.permutation(dummy)
 
-#从所有治疗组合中找出最优的
 def argmaxer_global(q_fn, evaluation_budget, treatment_budget, env, ixs=None):
   HARD_EVALUATION_LIMIT = 1000
-  #comb 组合数 C_{rho}^L
   assert(comb(env.L, treatment_budget) < HARD_EVALUATION_LIMIT,
          '(L choose treatment_budget) greater than HARD_EVALUATION_LIMIT.')
   all_ix_combos = combinations(range(env.L), treatment_budget)

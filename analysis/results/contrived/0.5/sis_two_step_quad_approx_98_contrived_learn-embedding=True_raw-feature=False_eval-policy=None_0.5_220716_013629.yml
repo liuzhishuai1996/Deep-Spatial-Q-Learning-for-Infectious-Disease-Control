@@ -1,0 +1,121 @@
+results:
+  0:
+    V: 236.5491237562608
+    runtime: 3829.8192586898804
+    score: 0.217425431711146
+    score_current: 0.17346938775510204
+  1:
+    V: 244.6648275623391
+    runtime: 3834.8025002479553
+    score: 0.25706436420722134
+    score_current: 0.21428571428571427
+  2:
+    V: 212.76214898382474
+    runtime: 3841.7969484329224
+    score: 0.2217425431711146
+    score_current: 0.22448979591836735
+  3:
+    V: 221.9534446762579
+    runtime: 3825.9846658706665
+    score: 0.2001569858712716
+    score_current: 0.16326530612244897
+  4:
+    V: 218.3082292237148
+    runtime: 3832.0719997882843
+    score: 0.21428571428571427
+    score_current: 0.20408163265306123
+  5:
+    V: 212.8108410139846
+    runtime: 3831.2511174678802
+    score: 0.22213500784929358
+    score_current: 0.16326530612244897
+  6:
+    V: 221.35506258516847
+    runtime: 3835.649307489395
+    score: 0.22998430141287285
+    score_current: 0.2755102040816326
+  7:
+    V: 222.39344776768093
+    runtime: 3797.263611316681
+    score: 0.22252747252747251
+    score_current: 0.2653061224489796
+  8:
+    V: 302.45099337404866
+    runtime: 3836.4094591140747
+    score: 0.28414442700156983
+    score_current: 0.2653061224489796
+  9:
+    V: 248.27239006396098
+    runtime: 3828.723410844803
+    score: 0.2554945054945055
+    score_current: 0.11224489795918367
+  10:
+    V: 195.66114108975415
+    runtime: 3839.4765951633453
+    score: 0.18799058084772372
+    score_current: 0.14285714285714285
+  11:
+    V: 231.73134849647565
+    runtime: 3835.679154396057
+    score: 0.2327315541601256
+    score_current: 0.3469387755102041
+  12:
+    V: 283.2118298837975
+    runtime: 3833.8303406238556
+    score: 0.27197802197802196
+    score_current: 0.1836734693877551
+  13:
+    V: 288.12507149310386
+    runtime: 3834.704220533371
+    score: 0.304552590266876
+    score_current: 0.2653061224489796
+  14:
+    V: 170.25962616953424
+    runtime: 3835.7243514060974
+    score: 0.18288854003139718
+    score_current: 0.15306122448979592
+  15:
+    V: 178.43072689390843
+    runtime: 3757.1731944084167
+    score: 0.17739403453689168
+    score_current: 0.20408163265306123
+  16:
+    V: 216.39763755197617
+    runtime: 3838.8396134376526
+    score: 0.18524332810047095
+    score_current: 0.09183673469387756
+  17:
+    V: 217.5045932709646
+    runtime: 3831.9122257232666
+    score: 0.21467817896389324
+    score_current: 0.24489795918367346
+  18:
+    V: 254.8131476993546
+    runtime: 3838.30424952507
+    score: 0.25824175824175827
+    score_current: 0.19387755102040816
+  19:
+    V: 271.5577570771533
+    runtime: 3832.113405227661
+    score: 0.25510204081632654
+    score_current: 0.14285714285714285
+settings:
+  L: 98
+  argmaxer: quad_approx
+  argmaxer_name: quad_approx
+  classifier: SKLogit2
+  divide_evenly: false
+  env_name: sis
+  epsilon: 0.5
+  evaluation_budget: 100
+  evaluation_policy: null
+  gamma: 0.9
+  learn_embedding: 'True'
+  number_of_replicates: 20
+  planning_depth: 25
+  policy_name: two_step
+  raw_features: 'False'
+  regressor: Ridge
+  rollout_depth: 1
+  time_horizon: 25
+  treatment_budget: 5

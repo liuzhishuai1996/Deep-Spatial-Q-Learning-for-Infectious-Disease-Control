@@ -118,12 +118,12 @@ class SIS(SpatialDisease):
     if initial_state is None:
       self.initial_state = np.zeros(self.L)
     else:
-      self.initial_state = initial_state #最初的状态全是0
+      self.initial_state = initial_state 
 
     self.omega = omega
     self.state_covariance = self.beta[1] * np.eye(self.L)
 
-    self.neighbor_features = neighbor_features # 是否 Compute X and X2; should be false for model-based and myopic policies
+    self.neighbor_features = neighbor_features #should be false for model-based and myopic policies
     self.S = np.array([self.initial_state])
     self.S_indicator = self.S > 0
     self.num_infected_neighbors = []
@@ -147,7 +147,7 @@ class SIS(SpatialDisease):
     self.num_infected_neighbors = []
     self.num_infected_and_treated_neighbors = []
     self.Phi = []
-    self.current_state = self.S[-1,:]#与self.S本质上是两个对象
+    self.current_state = self.S[-1,:]
 
     counts_for_likelihood_names = ['n_00_0', 'n_01_0', 'n_10_0', 'n_11_0', 'n_00_1', 'n_01_1', 'n_10_1', 'n_11_1',
                                    'a_0', 'a_1']
@@ -210,9 +210,9 @@ class SIS(SpatialDisease):
   ##############################################################
 
   def add_state(self, s):
-    self.S = np.vstack((self.S, s)) #按行摞起来
+    self.S = np.vstack((self.S, s)) 
     self.S_indicator = np.vstack((self.S_indicator, s > 0))
-    self.current_state = s #更新当前状态
+    self.current_state = s 
 
   def update_state(self, s):
     state_mean = s * (1 - self.independence_parameter)
@@ -225,8 +225,8 @@ class SIS(SpatialDisease):
     :return next_state: self.L-length array of new states
     """
     super(SIS, self).next_state()
-    next_state = self.update_state(self.current_state) #根据自回归模型获得下一期状态
-    self.add_state(next_state) #更新下一期状态
+    next_state = self.update_state(self.current_state) 
+    self.add_state(next_state) 
     return next_state
 
   def infection_probability(self, a, y, s, eta=ETA):
@@ -246,8 +246,8 @@ class SIS(SpatialDisease):
       return self.infection_probability(a, self.current_infected, self.current_state, eta=eta)
 
   def add_infections(self, y):
-    self.Y = np.vstack((self.Y, y)) #状态也是按行摞起来 从-1开始存的
-    self.current_infected = y #更新当前状态
+    self.Y = np.vstack((self.Y, y)) 
+    self.current_infected = y 
 
   def next_infections(self, a, eta=None):
     """
@@ -266,7 +266,7 @@ class SIS(SpatialDisease):
                                   (1 - self.independence_parameter) * dependent_infected_probabilities
     next_infections = np.random.binomial(n=[1] * self.L, p=next_infected_probabilities)
     self.true_infection_probs.append(next_infected_probabilities)
-    self.add_infections(next_infections) #更新状态
+    self.add_infections(next_infections) 
 
   def neighbor_infection_and_treatment_status(self, l, a, y):
     neighbor_ixs = self.adjacency_list[l]
@@ -290,25 +290,24 @@ class SIS(SpatialDisease):
 
   def update_obs_history(self, a):
     """
-    更新观测的历史信息 把新观测到的信息加入list中
     :param a: self.L-length array of binary actions at each state
     """
     super(SIS, self).update_obs_history(a)
-    raw_data_block = np.column_stack((self.S_indicator[-2, :], a, self.Y[-2, :])) #用当前期的s a y按列组成一个L*3的矩阵
+    raw_data_block = np.column_stack((self.S_indicator[-2, :], a, self.Y[-2, :])) 
 
     # Main features
-    self.X_raw.append(raw_data_block) #从t=0开始存的
-    self.y.append(self.current_infected) #从t=0开始存的
-    data_block_1 = self.binary_psi(raw_data_block, neighbor_order=1) #转化成二进制编码
+    self.X_raw.append(raw_data_block) 
+    self.y.append(self.current_infected) 
+    data_block_1 = self.binary_psi(raw_data_block, neighbor_order=1) 
 
-    self.X.append(data_block_1) #存储一阶邻居二进制编码
+    self.X.append(data_block_1) 
 
-    if self.neighbor_features: #转化并存储二阶邻居二进制编码
+    if self.neighbor_features: 
       data_block_2 = self.psi(raw_data_block, neighbor_order=2)
       self.X_2.append(data_block_2)
 
     # Update likelihood counts
-    self.update_counts_for_likelihood(data_block_1, self.Y[-2, :], self.current_infected) #更新n_x_x_x
+    self.update_counts_for_likelihood(data_block_1, self.Y[-2, :], self.current_infected) 
 
   def data_block_at_action(self, data_block_ix, action, neighbor_order=1, raw=False):
     """

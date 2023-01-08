@@ -62,7 +62,7 @@ class SpatialDisease(ABC):
     self.adjacency_matrix = adjacency_matrix
     self.adjacency_list = np.array([np.array([l_prime for l_prime in range(self.L)
                                               if self.adjacency_matrix[l, l_prime] == 1])
-                                    for l in range(self.L)], dtype = object) ##### 这里我加上了dtype = object 为了不报警告 #####
+                                    for l in range(self.L)], dtype = object) 
 
     network_as_nx_object = nx.from_numpy_matrix(self.adjacency_matrix)
     if construct_features_for_policy_search or compute_pairwise_distances:
@@ -129,10 +129,10 @@ class SpatialDisease(ABC):
     :param a: self.L-length array of binary actions at each state
     :param eta:
     """
-    self.A = np.vstack((self.A, a)) #每一期的治疗按行摞起来
-    self.next_infections(a, eta) #更新感染状态（结局）
-    self.next_state() #更新状态
-    self.update_obs_history(a) #保存新产生的信息
+    self.A = np.vstack((self.A, a)) 
+    self.next_infections(a, eta) 
+    self.next_state() 
+    self.update_obs_history(a) 
     self.T += 1
 
   @abstractmethod
