@@ -18,7 +18,7 @@ def one_step_policy(**kwargs):
     kwargs['bootstrap'], kwargs['raw_features']
 
   if bootstrap:
-    weights = np.random.exponential(size=len(env.X)*env.L) #从权重生成的数量来看 应该就是我写的那样
+    weights = np.random.exponential(size=len(env.X)*env.L)
   else:
     weights = None
   loss_dict = {}

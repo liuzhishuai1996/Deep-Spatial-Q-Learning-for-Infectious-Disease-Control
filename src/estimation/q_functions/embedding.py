@@ -24,7 +24,7 @@ else:
 class GGCN(nn.Module):
   def __init__(self, nfeat, J, adjacency_lst, neighbor_subset_limit=2, samples_per_k=None, recursive=False, dropout=0.0,
                apply_sigmoid=False, neighbor_order=2):
-    super(GGCN, self).__init__() #继承父类init
+    super(GGCN, self).__init__() 
     if neighbor_subset_limit > 1 and recursive:
       self.g1 = nn.Linear(2*J, J)
       # self.g2 = nn.Linear(J, J)
@@ -132,7 +132,7 @@ class GGCN(nn.Module):
     self.sample_indices_for_recursive() 
     def fk(b, k):
       if k == 1:
-        return self.h(b) #对应论文中的f^1
+        return self.h(b) 
       else:
         result = torch.zeros((L, self.J))
         permutations_k = self.permutations_all[k]
@@ -157,7 +157,7 @@ class GGCN(nn.Module):
     E = self.g(temp)
     if locations_subset is not None:
       E = E[locations_subset]
-    return E #返回特征 特征是J+nfeat维的
+    return E 
 
   def forward_recursive(self, X_, adjacency_lst):
     L = X_.shape[0]
@@ -210,12 +210,12 @@ def learn_ggcn(X_list, y_list, adjacency_list, n_epoch=100, nhid=10, batch_size=
                    samples_per_k=samples_per_k, recursive=recursive, lr=lr, tol=tol, dropout=dropout,
                    target_are_probs=target_are_probs, neighbor_order=neighbor_order)
 
-  def embedding_wrapper(X_): #学习得到的特征函数
+  def embedding_wrapper(X_):
     X_ = torch.FloatTensor(X_)
     E = model.embed_recursive_vec(X_).detach().numpy() 
     return E
 
-  def model_wrapper(X_):  #最终学习出来的模型
+  def model_wrapper(X_):
     X_ = torch.FloatTensor(X_)
     logits = model.forward_recursive_vec(X_, train=False) 
     if not target_are_probs:
@@ -253,7 +253,7 @@ def oracle_tune_ggcn(X_list, y_list, adjacency_list, env, eval_actions, true_pro
   worst_score = -float('inf')
   results = {'lr': [], 'dropout': [], 'nhid': [], 'neighbor_subset': [], 'score': []}
   for _ in range(num_settings_to_try):
-    # Fit model with settings 随机选一套组合出来
+    # Fit model with settings
     lr = np.random.choice(LR_RANGE)
     dropout = np.random.choice(DROPOUT_RANGE)
     nhid = int(np.random.choice(NHID_RANGE))
@@ -269,7 +269,7 @@ def oracle_tune_ggcn(X_list, y_list, adjacency_list, env, eval_actions, true_pro
     def qfn(a):
       # X_raw_ = env.data_block_at_action(-1, a, raw=True)
       if X_eval is None:
-        X_ = env.data_block_at_action(-1, a) #最后一期的
+        X_ = env.data_block_at_action(-1, a)
       else:
         X_ = copy.copy(X_eval)
         if hasattr(env, 'NEIGHBOR_DISTANCE_MATRIX'):
@@ -361,8 +361,8 @@ def fit_ggcn(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5,
              locations_subsets=None, target_are_probs=False, neighbor_order=2):
   # See here: https://github.com/tkipf/pygcn/blob/master/pygcn/train.py
   # Specify model
-  p = X_list[0].shape[1] #特征维数
-  T = len(X_list) #拟合的总期数
+  p = X_list[0].shape[1]
+  T = len(X_list)
   X_list = [torch.FloatTensor(X) for X in X_list]
   y_list = [torch.FloatTensor(y) for y in y_list]
 
@@ -387,12 +387,12 @@ def fit_ggcn(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5,
 
     for X, y, ix in zip(X_batch, y_batch, batch_ixs):
       model.train()
-      optimizer.zero_grad() #将梯度归零--清除上一次的梯度
+      optimizer.zero_grad()
       X = Variable(X)
       if target_are_probs:
         y = Variable(y).unsqueeze(1)
       else:
-        y = Variable(y).long() #这是什么？
+        y = Variable(y).long()
 
       if locations_subsets is not None:
         locations_subset = locations_subsets[ix]
@@ -413,8 +413,8 @@ def fit_ggcn(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5,
       #print(f'penalty: {regular} loss: {loss_train}')
       loss_train += LAMBDA*regular
 
-      loss_train.backward() #反向传播计算得到每个参数的梯度值
-      optimizer.step() #对参数进行更新
+      loss_train.backward() 
+      optimizer.step() 
 
     # Evaluate loss
     for X_, y_ in zip(X_list, y_list):
@@ -435,7 +435,7 @@ def fit_ggcn(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5,
             'acc_train: {:.4f}'.format(avg_acc_train),
             'grad_norm: {:.4f}'.format(grad_norm))
 
-    # Break if change in accuracy is sufficiently small  这里会非常影响速度和正确率
+    # Break if change in accuracy is sufficiently small  
     # if epoch > 0:
     #   relative_acc_diff = np.abs(prev_avg_acc_train - avg_acc_train) / avg_acc_train
     #   if relative_acc_diff < tol:
@@ -445,7 +445,7 @@ def fit_ggcn(X_list, y_list, adjacency_list, n_epoch=50, nhid=100, batch_size=5,
 
   final_acc_train = 0.
   for X_, y_ in zip(X_list, y_list):
-    output = model(X_, adjacency_list) #output是2维的 第一维对应y=0的score 第二维对应y=1的socre
+    output = model(X_, adjacency_list)
     if target_are_probs:
       yhat = output[:, 0]
       acc = ((yhat - y_)**2).float().mean().detach().numpy()

@@ -153,7 +153,7 @@ class Simulator_test(object):
 
 
       #compute absolute error and kl distance
-      N_REP = 100 #从均匀分布中随机产生N_REP组治疗
+      N_REP = 100 
       dummy_act = np.concatenate((np.ones(treatment_budget), np.zeros(env.L - treatment_budget)))
       eval_actions = [np.random.permutation(dummy_act) for _ in range(N_REP)] 
 
@@ -1063,7 +1063,7 @@ class Simulator_treat2(object):
         return clf.predict_proba(X_)[:, 1]
 
       #compute absolute error and kl distance
-      N_REP = 100 #从均匀分布中随机产生N_REP组治疗
+      N_REP = 100
       dummy_act = np.concatenate((np.ones(treatment_budget), np.zeros(env.L - treatment_budget)))
       eval_actions = [np.random.permutation(dummy_act) for _ in range(N_REP)] 
 

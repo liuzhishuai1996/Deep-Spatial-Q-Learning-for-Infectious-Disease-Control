@@ -37,7 +37,6 @@ VALID_NETWORK_NAMES = ['lattice', 'barabasi', 'nearestneighbor', 'contrived']
 
 
 
-#如果if __name__ == '__main__' 所在模块是被直接运行的，则该语句下代码块被运行，如果所在模块是被导入到其他的python脚本中运行的，则该语句下代码块不被运行。
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--env_name', type=str, choices=VALID_ENVIRONMENT_NAMES)

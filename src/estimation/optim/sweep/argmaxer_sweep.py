@@ -18,7 +18,6 @@ def perturb_action(action, number_to_perturb):
   action[zero_ixs[perturb_ixs]] = 1
   return action
 
-#找出治疗里面感染概率最低的地方 不对这个地区进行治疗 找出不治疗里感染概率最高的地方 对这个地区进行治疗
 def swap_action(q_fn, action):
   """
   Move lowest q_fn treatment to highest non-treated area.
@@ -37,7 +36,6 @@ def swap_action(q_fn, action):
   else:
     return None
 
-#定义了一种sweep的方法找最优治疗
 def argmaxer_sweep(q_fn, evaluation_budget, treatment_budget, env, ixs=None):
   if ixs:
     L = len(ixs)

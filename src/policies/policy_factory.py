@@ -1,9 +1,3 @@
-'''
-Description: 
-version: 
-Author: Zhishuai
-Date: 2021-09-10 02:42:46
-'''
 import src.policies.reference_policies as ref
 import src.policies.q_function_policies as roll
 import src.policies.policy_search as ps

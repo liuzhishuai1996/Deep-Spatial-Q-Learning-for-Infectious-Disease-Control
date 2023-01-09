@@ -126,20 +126,20 @@ class Simulator(object):
     for t in range(self.time_horizon-5):
       print(t)
       tt0 = time.time()
-      a, info = self.policy(**self.policy_arguments) #主要信息都在这一步
-      self.policy_arguments['planning_depth'] = self.time_horizon - t ##### 这一步更新有用吗？ #####
+      a, info = self.policy(**self.policy_arguments) 
+      self.policy_arguments['planning_depth'] = self.time_horizon - t 
       print(self.env.Y[-1, :].mean())
 
       mean_infection = float(self.env.Y[-1, :].mean())
       mean_infection_rate.append(mean_infection)
 
-      self.env.step(a) #用policy给出的治疗再往下走一期
+      self.env.step(a) 
       tt1 = time.time()
       print(float(tt1-tt0))
 
 
     t1 = time.time()
-    score = np.mean(self.env.Y) #计算的是所有期的平均感染率
+    score = np.mean(self.env.Y) 
     discounted_factor = [np.power(self.gamma,i) for i in range(self.env.Y.shape[0])]
     V = np.dot(np.sum(self.env.Y,1), discounted_factor)
     # score = np.mean(self.env.current_infected)
