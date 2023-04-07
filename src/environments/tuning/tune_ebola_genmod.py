@@ -27,7 +27,7 @@ def alpha_loss(env, Y_25):
   return np.abs(target_infections - observed_infections)
 
 
-def beta_loss(Y_25_true_probs, Y_25_rando, Y_0_mean):
+def beta_loss(Y_25_treat_all, Y_25_treat_none, Y_0_mean):
   observed_infections_treat_all = np.mean(np.sum(Y_25_treat_all, axis=1))
   observed_infections_treat_one = np.mean(np.sum(Y_25_treat_none, axis=1))
   return np.abs((observed_infections_treat_all - Y_0_mean) / (observed_infections_treat_one - Y_0_mean) - 0.05)
